@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: clean-architecture-api
+    build:
+      context: .
+      target: builder
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=clean_architecture
+    networks:
+      - clean-architecture-network
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: clean-architecture-postgres
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=clean_architecture
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - clean-architecture-network
+
+volumes:
+  postgres_data:
+
+networks:
+  clean-architecture-network:
+    driver: bridge 
