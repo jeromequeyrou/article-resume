@@ -10,10 +10,8 @@ export class DeleteUserUseCase {
   ) {}
 
   async execute(id: string): Promise<void> {
-    // Vérifier si l'utilisateur existe (findById lancera une exception si non trouvé)
     await this.userRepository.findById(id);
     
-    // Supprimer l'utilisateur
     await this.userRepository.delete(id);
   }
 } 

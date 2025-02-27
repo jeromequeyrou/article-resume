@@ -7,13 +7,11 @@ import { ValidationError } from 'class-validator';
 import { ErrorFormatInterceptor } from './infrastructure/interceptors/error-format.interceptor';
 
 async function bootstrap() {
-  // Configurer le niveau de log
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log', 'debug', 'verbose'],
   });
   const logger = new Logger('Bootstrap');
   
-  // Configuration de la validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -22,7 +20,7 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
-      stopAtFirstError: false, // Collecter toutes les erreurs
+      stopAtFirstError: false,
       exceptionFactory: (errors: ValidationError[]) => {
         logger.debug(`Validation errors: ${JSON.stringify(errors)}`);
         
@@ -51,7 +49,6 @@ async function bootstrap() {
     }),
   );
   
-  // Configuration des intercepteurs et filtres
   app.useGlobalInterceptors(new ErrorFormatInterceptor());
   app.useGlobalFilters(
     new ValidationExceptionFilter(),
@@ -62,7 +59,6 @@ async function bootstrap() {
   logger.log(`Application started on port 3000`);
 }
 
-// Traitement des erreurs imbriquées
 function processChildErrors(
   children: ValidationError[],
   parentProperty: string,

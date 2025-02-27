@@ -32,14 +32,11 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(id: string, user: User): Promise<User> {
-    // Vérifier si l'utilisateur existe
     await this.findById(id);
     
-    // Mettre à jour l'utilisateur
     const userEntity = UserEntity.fromDomain(user);
     await this.userRepository.update(id, userEntity);
     
-    // Récupérer l'utilisateur mis à jour
     return this.findById(id);
   }
 

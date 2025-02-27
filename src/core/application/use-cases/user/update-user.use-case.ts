@@ -12,10 +12,8 @@ export class UpdateUserUseCase {
   ) {}
 
   async execute(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    // Vérifier si l'utilisateur existe
     const existingUser = await this.userRepository.findById(id);
     
-    // Vérifier si l'email est déjà utilisé par un autre utilisateur
     if (updateUserDto.email) {
       const userWithEmail = await this.userRepository.findByEmail(updateUserDto.email);
       if (userWithEmail && userWithEmail.getId() !== id) {
@@ -23,14 +21,12 @@ export class UpdateUserUseCase {
       }
     }
 
-    // Créer un nouvel objet utilisateur avec les données mises à jour
     const updatedUser = new User(
       id,
       updateUserDto.email || existingUser.getEmail(),
       updateUserDto.name || existingUser.getName(),
     );
 
-    // Mettre à jour l'utilisateur
     return this.userRepository.update(id, updatedUser);
   }
 } 

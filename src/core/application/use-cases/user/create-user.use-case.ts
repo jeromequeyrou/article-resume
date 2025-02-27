@@ -15,17 +15,14 @@ export class CreateUserUseCase {
   async execute(createUserDto: CreateUserDto): Promise<User> {
     const { email, name } = createUserDto;
 
-    // Vérifier si l'utilisateur existe déjà
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
       throw new ConflictException(`Un utilisateur avec l'email ${email} existe déjà`);
     }
 
-    // Créer un nouvel utilisateur
     const id = uuidv4();
     const user = new User(id, email, name);
 
-    // Sauvegarder l'utilisateur
     return this.userRepository.save(user);
   }
 } 
